@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:scream_mobile/rest/login.dart';
 import 'package:scream_mobile/agent/dialogue.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/storage/token_storage.dart';
+import 'package:scream_mobile/util/logger.dart';
 
 class Message {
   final String role;
@@ -75,7 +75,7 @@ Future<Stream<String>> streamingCompletion(List<Message> chatHistory,
 Future<Stream<String>> _attemptStreamingCompletion(
     List<Message> chatHistory, String systemPrompt, Function(String) speak,
     {required bool isRetry}) async {
-  print(
+  Logger.log(
       'Getting streaming completion at ${PlatformStorage.chatCompletionUrl}...');
   final url = Uri.parse(PlatformStorage.chatCompletionUrl);
 

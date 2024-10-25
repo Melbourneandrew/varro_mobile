@@ -12,6 +12,7 @@ class PlatformStorage {
   static late final String chatCompletionUrl;
   static late final String testUrl;
   static late final String userProfileIdeationUrl;
+  static late String modelName;
 
   static Future<bool> _isRunningInSimulator() async {
     final deviceInfo = DeviceInfoPlugin();
@@ -34,5 +35,10 @@ class PlatformStorage {
     chatCompletionUrl = '$apiUrl/chat_completion';
     testUrl = '$apiUrl/';
     userProfileIdeationUrl = '$apiUrl/user_profile_ideation';
+    modelName = 'gpt-4o';
+  }
+
+  static void setModelName(String name) {
+    modelName = name;
   }
 }
