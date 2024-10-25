@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:scream_mobile/agent/prompts.dart';
+import 'package:scream_mobile/agent/dialogue.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/rest/user_profile_ideation.dart';
 import 'package:scream_mobile/storage/greeting_storage.dart';
@@ -85,7 +86,7 @@ class Agent {
   Future<String> answerUser(String text, Function(String) speak) async {
     QuestionStorage.removeQuestion(lastQuestionAsked);
 
-    messageHistory.add(Message(role: 'user', message: text));
+    messageHistory.add(Message(role: 'user', content: text));
 
     String latestResponse = '';
     try {
@@ -117,10 +118,10 @@ class Agent {
         latestResponse += buffer;
       }
 
-      messageHistory.add(Message(role: 'model', message: latestResponse));
+      messageHistory.add(Message(role: 'model', content: latestResponse));
       return latestResponse;
     } catch (e) {
-      print("Error in streaming completion: $e");
+      Logger.errorLog("Error in streaming completion: $e");
       return "I'm sorry, I encountered an error while processing your request.";
     }
   }
@@ -128,8 +129,8 @@ class Agent {
   Future<String> questionUser(Function(String) speak) async {
     List<String> questions = await QuestionStorage.getQuestions();
     if (questions.isEmpty) {
-      Logger.log("No questions in storage (this is bad)");
-      return "I'm sorry, I don't have any questions to ask.";
+      Logger.errorLog("No questions in storage (this is bad)");
+      return Dialogue.NoQuestionsAvailableToAsk;
     }
 
     Logger.log("Questions in storage: $questions");

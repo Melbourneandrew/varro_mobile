@@ -90,9 +90,9 @@ Future<Stream<String>> _attemptStreamingCompletion(
     chatHistory: chatHistory,
   );
 
-  print('Chat history:');
+  Logger.log('Chat history:');
   for (var message in chatHistory) {
-    print('${message.role}: ${message.content}');
+    Logger.log('${message.role}: ${message.content}');
   }
 
   final body = payload.toJsonString();
@@ -106,7 +106,11 @@ Future<Stream<String>> _attemptStreamingCompletion(
   if (streamedResponse.statusCode == 200) {
     return streamedResponse.stream
         .transform(utf8.decoder)
-        .transform(const LineSplitter());
+        .transform(const LineSplitter())
+        .map((line) => jsonDecode(line)) // Decode each line as JSON
+        .where((json) => json['choices'] != null && json['choices'].isNotEmpty) // Filter out irrelevant JSON objects
+        .map((json) => json['choices'][0]['delta']['content'] as String) // Extract the "content"
+        .where((content) => content.isNotEmpty); // Filter out empty content
   } else {
     speak(Dialogue.StreamingCompletionFailed);
     final responseBody = await streamedResponse.stream.bytesToString();

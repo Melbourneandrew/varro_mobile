@@ -11,4 +11,6 @@ class Dialogue {
       "I'm having trouble getting a response from the server. You'll need to try again.";
   static const ProfileUpdateFailed =
       "I'm having trouble updating your profile. You'll need to try again.";
+  static const NoQuestionsAvailableToAsk =
+      "I'm sorry, I don't have any questions to ask.";
 }
