@@ -105,12 +105,18 @@ Future<Stream<String>> _attemptStreamingCompletion(
 
   if (streamedResponse.statusCode == 200) {
     return streamedResponse.stream
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .map((line) => jsonDecode(line)) // Decode each line as JSON
-        .where((json) => json['choices'] != null && json['choices'].isNotEmpty) // Filter out irrelevant JSON objects
-        .map((json) => json['choices'][0]['delta']['content'] as String) // Extract the "content"
-        .where((content) => content.isNotEmpty); // Filter out empty content
+        .transform(utf8.decoder) // Decode bytes into UTF8 characters
+        .transform(const LineSplitter()) // Split stream into lines
+        .map((line) => line.startsWith('data: ') ? line.substring(6) : line) // Remove the 'data: ' prefix
+        .map((line) {
+          try {
+            return jsonDecode(line); // Attempt to decode each line as JSON
+          } catch (e) {
+            return {}; // Return an empty JSON object in case of failure
+          }
+        })
+        .where((json) => json.isNotEmpty && json['choices'] != null && json['choices'].isNotEmpty) // Filter out empty JSON and objects without 'choices'
+        .map((json) => json['choices'][0]['delta']['content'] ?? ""); // Get the first 'choice'
   } else {
     speak(Dialogue.StreamingCompletionFailed);
     final responseBody = await streamedResponse.stream.bytesToString();

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scream_mobile/rest/login.dart';
-import 'package:scream_mobile/rest/register.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
-import 'package:scream_mobile/agent/dialogue.dart';
-
 import 'agent/agent.dart';
+import 'package:scream_mobile/storage/token_storage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,23 +39,23 @@ class _SimulatorHUDState extends State<SimulatorHUD> {
   final TextEditingController _userPromptController = TextEditingController(
     text: "Come up with something for us to talk about"
   );
+  final TextEditingController _tokenController = TextEditingController();
+
   String _response = '';
   Agent agent = Agent(model: "gpt-4o-mini");
 
-  void _handleRegister() async {
-    setState(() {
-      _response = 'Registering...';
-    });
-
-    register(Logger.speakLog);
-  }
-
-  void _handleLogin() {
-    setState(() {
-      _response = 'Login button pressed';
-    });
-
-    login(Logger.speakLog);
+  void _handleSetToken() {
+    final token = _tokenController.text;
+    if (token.isNotEmpty) {
+      TokenStorage.saveToken(token);
+      setState(() {
+        _response = 'Token set';
+      });
+    } else {
+      setState(() {
+        _response = 'Token cannot be empty';
+      });
+    }
   }
 
   void _handleSend() async {
@@ -68,7 +65,7 @@ class _SimulatorHUDState extends State<SimulatorHUD> {
 
     try {
       final chatHistory = [
-        Message(role: 'user', message: _userPromptController.text),
+        Message(role: 'user', content: _userPromptController.text),
       ];
 
       final stream = await streamingCompletion(
@@ -99,6 +96,7 @@ class _SimulatorHUDState extends State<SimulatorHUD> {
     });
       agent.updateProfileAndQuestions(Logger.speakLog);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,17 +109,15 @@ class _SimulatorHUDState extends State<SimulatorHUD> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: _handleRegister,
-                  child: const Text('Register'),
+                Expanded(
+                  child: TextField(
+                    controller: _tokenController,
+                    decoration: const InputDecoration(labelText: 'API Key'),
+                  )
                 ),
                 ElevatedButton(
-                  onPressed: _handleLogin,
-                  child: const Text('Login'),
-                ),
-                ElevatedButton(
-                  onPressed: _handleUpdateProfile,
-                  child: const Text('Update Profile'),
+                  onPressed: _handleSetToken,
+                  child: const Text('Set Token'),
                 ),
               ],
             ),

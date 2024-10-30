@@ -3,7 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 
 class PlatformStorage {
   static const String _productionApiUrl = 'https://api.example.com';
-  static const String _developmentApiUrl = 'http://localhost:8080';
+  static const String _developmentApiUrl = 'https://api.openai.com/v1/chat/completions';
   
   static late final bool isSimulator;
   static late final String apiUrl;
@@ -32,10 +32,10 @@ class PlatformStorage {
     apiUrl = isSimulator ? _developmentApiUrl : _productionApiUrl;
     registerUrl = '$apiUrl/register';
     loginUrl = '$apiUrl/login';
-    chatCompletionUrl = '$apiUrl/chat_completion';
+    chatCompletionUrl = apiUrl;
     testUrl = '$apiUrl/';
     userProfileIdeationUrl = '$apiUrl/user_profile_ideation';
-    modelName = 'gpt-4o';
+    modelName = 'gpt-4o-mini';
   }
 
   static void setModelName(String name) {
