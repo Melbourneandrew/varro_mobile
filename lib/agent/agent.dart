@@ -7,6 +7,7 @@ import 'package:scream_mobile/agent/dialogue.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/rest/user_profile_ideation.dart';
 import 'package:scream_mobile/storage/greeting_storage.dart';
+import 'package:scream_mobile/storage/message_storage.dart';
 import 'package:scream_mobile/storage/profile_storage.dart';
 import 'package:scream_mobile/storage/question_storage.dart';
 import 'package:scream_mobile/util/strip_formatting.dart';
@@ -85,8 +86,9 @@ class Agent {
 
   Future<String> answerUser(String text, Function(String) speak) async {
     QuestionStorage.removeQuestion(lastQuestionAsked);
-
-    messageHistory.add(Message(role: 'user', content: text));
+    Message message = Message(role: 'user', content: text);
+    messageHistory.add(message);
+    MessageStorage.saveMessage(message);
 
     String latestResponse = '';
     try {
@@ -118,7 +120,10 @@ class Agent {
         latestResponse += buffer;
       }
 
-      messageHistory.add(Message(role: 'model', content: latestResponse));
+      Message responseMessage = Message(role: 'model', content: latestResponse);
+      messageHistory.add(responseMessage);
+      MessageStorage.saveMessage(responseMessage);
+
       return latestResponse;
     } catch (e) {
       Logger.errorLog("Error in streaming completion: $e");

@@ -8,8 +8,19 @@ import 'package:scream_mobile/util/logger.dart';
 class Message {
   final String role;
   final String content;
+  final String date;
 
-  Message({required this.role, required this.content});
+  // constructor that sets the date as the current date
+  Message.withDate({
+    required this.role,
+    required this.content,
+    required this.date
+  });
+
+  Message({
+    required this.role,
+    required this.content,
+  }) : date = DateTime.now().toIso8601String();
 
   Map<String, String> toJson() {
     return {
@@ -25,13 +36,34 @@ class Message {
     );
   }
 
+  factory Message.fromJsonWithDate(Map<String, dynamic> json) {
+    return Message.withDate(
+      role: json['role'],
+      content: json['content'],
+      date: json['date'],
+    );
+  }
+
   String toJsonString() {
     return jsonEncode(toJson());
+  }
+
+  String toJsonStringWithDate() {
+    return jsonEncode({
+      "role": role,
+      "content": content,
+      "date": date
+    });
   }
 
   static Message fromJsonString(String jsonString) {
     Map<String, String> json = jsonDecode(jsonString);
     return Message.fromJson(json);
+  }
+
+  static Message fromJsonStringWithDate(String jsonString) {
+    Map<String, String> json = jsonDecode(jsonString);
+    return Message.fromJsonWithDate(json);
   }
 }
 

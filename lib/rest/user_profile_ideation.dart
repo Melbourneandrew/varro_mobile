@@ -4,10 +4,48 @@ import 'package:scream_mobile/rest/login.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/storage/profile_storage.dart';
 import '../agent/dialogue.dart';
+import '../agent/prompts.dart';
 import '../storage/platform_storage.dart';
 import '../storage/token_storage.dart';
 import '../util/logger.dart';
 
+class IdeationCompletionRequestPayload {
+  final String systemPrompt;
+  final List<Message> chatHistory;
+
+  IdeationCompletionRequestPayload({
+    required this.systemPrompt,
+    required this.chatHistory,
+  });
+
+  // https://platform.openai.com/docs/api-reference/chat
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      "model": PlatformStorage.modelName,
+      "messages": [
+        {
+          "role": "system",
+          "content": systemPrompt,
+        },
+        ...chatHistory.map((message) => message.toJson()).toList(),
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "user_profile_schema",
+          "schema": UserProfile.toJsonSchema(),
+          "strict": true
+        }
+      }
+    };
+
+    return json;
+  }
+
+  String toJsonString() {
+    return jsonEncode(toJson());
+  }
+}
 class ProfileUpdateResponse {
   final UserProfile profile;
   final List<String> questions;
@@ -33,8 +71,17 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     'Authorization': 'Bearer $token',
   };
 
+  Message systemPrompt = Message(
+    role: 'system',
+    content: Prompts.UpdateProfileSystemPrompt,
+  );
+  Message userPrompt = Message(
+    role: 'user',
+    content: await Prompts.buildUpdateProfilePrompt(),
+  );
+
   final payload = {
-    'recent_questions': recentQuestions,
+    'messages': List.of(systemPrompt, userPrompt),
   };
 
   final response = await http.post(
@@ -42,6 +89,7 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     headers: headers,
     body: jsonEncode(payload),
   );
+
   if (response.statusCode == 208) {
     Logger.log("Profile is already up to date");
     return null;
