@@ -80,9 +80,10 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     content: await Prompts.buildUpdateProfilePrompt(),
   );
 
-  final payload = {
-    'messages': List.of(systemPrompt, userPrompt),
-  };
+  final payload = IdeationCompletionRequestPayload(
+    systemPrompt: Prompts.UpdateProfileSystemPrompt,
+    chatHistory: [systemPrompt, userPrompt],
+  );
 
   final response = await http.post(
     url,
