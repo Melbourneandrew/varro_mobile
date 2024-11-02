@@ -5,8 +5,6 @@ import 'package:scream_mobile/agent/dictate.dart';
 import 'package:scream_mobile/modals/openai-key-modal.dart';
 import 'package:scream_mobile/modals/welcome-modal.dart';
 import 'package:scream_mobile/modals/modal-states.dart';
-import 'package:scream_mobile/rest/login.dart';
-import 'package:scream_mobile/rest/register.dart';
 import 'package:scream_mobile/util/silence_timer.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/storage/usage_storage.dart';
@@ -74,10 +72,6 @@ class _ConvoViewState extends State<ConvoView> {
       // });
       // Store.addCredits(100);
     }
-    if (!await UsageStorage.isUserRegistered()) {
-      await register(speak);
-    }
-    await loginIfNeeded(speak);
   }
 
   void screenPressed() {

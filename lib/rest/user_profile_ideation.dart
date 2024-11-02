@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:scream_mobile/rest/login.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/storage/profile_storage.dart';
 import '../agent/dialogue.dart';
@@ -63,7 +62,7 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     List<String> recentQuestions, Function(String) speak,
     {required bool isRetry}) async {
   Logger.log('Updating user profile and generating questions...');
-  final url = Uri.parse(PlatformStorage.userProfileIdeationUrl);
+  final url = Uri.parse(PlatformStorage.chatCompletionUrl);
 
   final token = await TokenStorage.getToken();
   final headers = {
@@ -84,17 +83,14 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     systemPrompt: Prompts.UpdateProfileSystemPrompt,
     chatHistory: [systemPrompt, userPrompt],
   );
-
+  final body = payload.toJsonString();
   final response = await http.post(
     url,
     headers: headers,
-    body: jsonEncode(payload),
+    body: payload.toJsonString(),
   );
 
-  if (response.statusCode == 208) {
-    Logger.log("Profile is already up to date");
-    return null;
-  } else if (response.statusCode == 200) {
+  if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
     return ProfileUpdateResponse(
       profile: UserProfile.fromJson(responseData['profile']),
@@ -102,7 +98,6 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     );
   } else if (response.statusCode == 401 && !isRetry) {
     speak(Dialogue.UserNotLoggedIn);
-    await login(speak);
     return _attemptUpdateUserProfileAndGenerateQuestions(recentQuestions, speak,
         isRetry: true);
   } else {

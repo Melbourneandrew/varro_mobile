@@ -7,11 +7,7 @@ class PlatformStorage {
   
   static late final bool isSimulator;
   static late final String apiUrl;
-  static late final String registerUrl;
-  static late final String loginUrl;
   static late final String chatCompletionUrl;
-  static late final String testUrl;
-  static late final String userProfileIdeationUrl;
   static late String modelName;
 
   static Future<bool> _isRunningInSimulator() async {
@@ -30,11 +26,7 @@ class PlatformStorage {
   static Future<void> initialize() async {
     isSimulator = await _isRunningInSimulator();
     apiUrl = isSimulator ? _developmentApiUrl : _productionApiUrl;
-    registerUrl = '$apiUrl/register';
-    loginUrl = '$apiUrl/login';
     chatCompletionUrl = apiUrl;
-    testUrl = '$apiUrl/';
-    userProfileIdeationUrl = '$apiUrl/user_profile_ideation';
     modelName = 'gpt-4o-mini';
   }
 

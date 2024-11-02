@@ -132,9 +132,18 @@ class _SimulatorHUDState extends State<SimulatorHUD> {
               decoration: const InputDecoration(labelText: 'User Prompt'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _handleSend,
-              child: const Text('Send'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _handleUpdateProfile,
+                  child: const Text('Update Profile'),
+                ),
+                ElevatedButton(
+                  onPressed: _handleSend,
+                  child: const Text('Send'),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Expanded(
