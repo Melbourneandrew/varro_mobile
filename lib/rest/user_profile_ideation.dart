@@ -32,7 +32,20 @@ class IdeationCompletionRequestPayload {
         "type": "json_schema",
         "json_schema": {
           "name": "user_profile_schema",
-          "schema": UserProfile.toJsonSchema(),
+          "schema": {
+            "type": "object",
+            "properties": {
+              "profile": UserProfile.toJsonSchema(),
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                },
+              },
+            },
+            'required': ['profile', 'questions'],
+            'additionalProperties': false,
+          },
           "strict": true
         }
       }
@@ -50,6 +63,18 @@ class ProfileUpdateResponse {
   final List<String> questions;
 
   ProfileUpdateResponse({required this.profile, required this.questions});
+
+  static ProfileUpdateResponse fromJson(Map<String, dynamic> json) {
+    return ProfileUpdateResponse(
+      profile: UserProfile.fromJson(json['profile']),
+      questions: List<String>.from(json['questions']),
+    );
+  }
+
+  static ProfileUpdateResponse fromJsonString(String jsonString) {
+    Map<String, dynamic> json = jsonDecode(jsonString);
+    return ProfileUpdateResponse.fromJson(json);
+  }
 }
 
 Future<ProfileUpdateResponse?> updateUserProfileAndGenerateQuestions(
@@ -81,9 +106,10 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
 
   final payload = IdeationCompletionRequestPayload(
     systemPrompt: Prompts.UpdateProfileSystemPrompt,
-    chatHistory: [systemPrompt, userPrompt],
+    chatHistory: [userPrompt],
   );
-  final body = payload.toJsonString();
+
+  Logger.log(payload.toJsonString());
   final response = await http.post(
     url,
     headers: headers,
@@ -92,10 +118,9 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
 
   if (response.statusCode == 200) {
     final responseData = jsonDecode(response.body);
-    return ProfileUpdateResponse(
-      profile: UserProfile.fromJson(responseData['profile']),
-      questions: List<String>.from(responseData['questions']),
-    );
+    Logger.log("Json Decoded");
+    Logger.log(response.body);
+    return ProfileUpdateResponse.fromJsonString(responseData['choices'][0]['message']['content']);
   } else if (response.statusCode == 401 && !isRetry) {
     speak(Dialogue.UserNotLoggedIn);
     return _attemptUpdateUserProfileAndGenerateQuestions(recentQuestions, speak,

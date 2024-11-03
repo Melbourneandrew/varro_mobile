@@ -97,9 +97,10 @@ class UserProfile {
         'interests': {'type': 'string'},
         'goals': {'type': 'string'},
         'events': {'type': 'string'},
-        'last_update': {'type': 'string', 'format': 'date-time'},
+        'last_update': {'type': 'string'},
       },
       'required': ['name', 'interests', 'goals', 'events', 'last_update'],
+      'additionalProperties': false,
     };
   }
 }
