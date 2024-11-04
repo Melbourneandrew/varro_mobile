@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:scream_mobile/modals/modal-states.dart';
+import 'package:scream_mobile/modals/modal_states.dart';
 import '../store.dart';
+import '../util/logger.dart';
 
 class OpenAIKeyModal extends StatelessWidget {
   final Function(ModalState ms) setModalState;
-  OpenAIKeyModal({required this.setModalState});
+  const OpenAIKeyModal({required this.setModalState});
 
   void setPersonalKey(String apiKey) {
-    print("Setting personal OpenAI key: $apiKey");
+    Logger.log("Setting personal OpenAI key: $apiKey");
     Store.setPersonalOpenAIKey(apiKey);
     closeModal();
   }

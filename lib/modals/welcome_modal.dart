@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
-import 'package:scream_mobile/modals/modal-states.dart';
+import 'package:scream_mobile/modals/modal_states.dart';
+
+import '../util/logger.dart';
 
 class WelcomeModal extends StatelessWidget {
+  static const String TITLE = "Meet Varro";
+  static const String VARRO_DESCRIPTION = "Varro is a speak-first voice assistant. You can initiate a conversation at any time by pressing anywhere on the screen and talking out-load. If you wait a while, Varro will speak to you without any prompting!";
+  static const String PROFILE_IDEATON_DESCRIPTION = "The questions Varro asks are based on your 'profile' that is built up over time. This profile is stored on your device and is never shared with anyone.";
+  static const String OPENAI_API_KEY_DESCRIPTION = "To chat with Varro, you will need and OpenAI API key.";
+  static const String GET_STARTED_BUTTON_TEXT = "Get Started";
+
   final Function(ModalState ms) setModalState;
-  WelcomeModal({required this.setModalState});
+  const WelcomeModal({super.key, required this.setModalState});
+
+  void routeToAboutPage(){
+    Logger.log("Routing to about page");
+    // TODO: Open the about page
+  }
 
   void enterPersonalKey(){
-    print("Entering personal key");
+    Logger.log("Switching to OpenAI key modal");
     setModalState(ModalState.openAIKey);
   }
   void closeModal(){
-    print("Closing modal");
+    Logger.log("Closing modal");
     setModalState(ModalState.inactive);
   }
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 300,
-      height: 400,
       decoration: BoxDecoration(
         color: Colors.white60,
         borderRadius: BorderRadius.circular(20),
@@ -40,10 +52,11 @@ class WelcomeModal extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 10),
           const Text(
-            'Welcome to Eros',
+            TITLE,
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -53,7 +66,7 @@ class WelcomeModal extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              'Eros is a voice assistant. Simply speak your questions, and hear the answers.',
+              VARRO_DESCRIPTION,
               style: TextStyle(
                 fontSize: 16,
                 color: Color.fromRGBO(50, 50, 50, 1) ,
@@ -65,7 +78,19 @@ class WelcomeModal extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              "Eros runs on a costly language model. First chats are free; then you'll have to purchase credits for \$0.99" ,
+              PROFILE_IDEATON_DESCRIPTION,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromRGBO(50, 50, 50, 1) ,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              OPENAI_API_KEY_DESCRIPTION,
               style: TextStyle(
                 fontSize: 16,
                 color: Color.fromRGBO(50, 50, 50, 1) ,
@@ -75,7 +100,7 @@ class WelcomeModal extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           ElevatedButton(
-            onPressed: closeModal,
+            onPressed: enterPersonalKey,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue[900],
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -84,14 +109,14 @@ class WelcomeModal extends StatelessWidget {
               ),
             ),
             child: const Text(
-              'Get Started',
+              GET_STARTED_BUTTON_TEXT,
               style: TextStyle(
                 fontSize: 25,
                 color: Colors.white,
               ),
             ),
           ),
-          TextButton(onPressed: enterPersonalKey, child: Text("I have my own OpenAI API key"))
+          TextButton(onPressed: routeToAboutPage, child: const Text("Learn More"))
         ],
       ),
     );

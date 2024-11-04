@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scream_mobile/modals/modal-states.dart';
+import 'package:scream_mobile/modals/modal_states.dart';
 import '../store.dart';
 
 const String defaultApplePayConfigString = '''{

@@ -71,7 +71,7 @@ class UserProfile {
       interests: json['interests'],
       goals: json['goals'],
       events: json['events'],
-      lastUpdate: DateTime.parse(json['last_update']),
+      lastUpdate: DateTime.parse(json['last_update'] ?? DateTime.now().toIso8601String()),
     );
   }
 
@@ -97,9 +97,8 @@ class UserProfile {
         'interests': {'type': 'string'},
         'goals': {'type': 'string'},
         'events': {'type': 'string'},
-        'last_update': {'type': 'string'},
       },
-      'required': ['name', 'interests', 'goals', 'events', 'last_update'],
+      'required': ['name', 'interests', 'goals', 'events'],
       'additionalProperties': false,
     };
   }

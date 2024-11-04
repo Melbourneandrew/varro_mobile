@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:scream_mobile/ball-swirl.dart';
 import 'package:scream_mobile/agent/dictate.dart';
-import 'package:scream_mobile/modals/openai-key-modal.dart';
-import 'package:scream_mobile/modals/welcome-modal.dart';
-import 'package:scream_mobile/modals/modal-states.dart';
+import 'package:scream_mobile/modals/openai_key_modal.dart';
+import 'package:scream_mobile/modals/welcome_modal.dart';
+import 'package:scream_mobile/modals/modal_states.dart';
 import 'package:scream_mobile/util/silence_timer.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/storage/usage_storage.dart';
@@ -67,10 +67,9 @@ class _ConvoViewState extends State<ConvoView> {
 
   void firstTimeSetup() async {
     if (await UsageStorage.firstTimeOpeningApp()) {
-      // setState(() {
-      //   modalState = ModalState.welcome;
-      // });
-      // Store.addCredits(100);
+      setState(() {
+        modalState = ModalState.welcome;
+      });
     }
   }
 
