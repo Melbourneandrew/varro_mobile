@@ -54,4 +54,14 @@ class QuestionStorage {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_askedQuestionsKey);
   }
+
+  static Future<void> loadInitialQuestions() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> initialQuestions = [
+      "What are your goals in life?",
+      "What are you passionate about?",
+      "What is your name?",
+    ];
+    await prefs.setString(_key, jsonEncode(initialQuestions));
+  }
 }

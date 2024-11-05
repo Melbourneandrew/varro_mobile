@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:scream_mobile/ball-swirl.dart';
 import 'package:scream_mobile/agent/dictate.dart';
+import 'package:scream_mobile/storage/question_storage.dart';
+import 'package:scream_mobile/views/menu_view.dart';
 import 'package:scream_mobile/modals/openai_key_modal.dart';
 import 'package:scream_mobile/modals/welcome_modal.dart';
 import 'package:scream_mobile/modals/modal_states.dart';
@@ -11,9 +13,7 @@ import 'package:scream_mobile/storage/usage_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
 import 'FadingText.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
-
 import 'agent/agent.dart';
-import 'modals/pay-modal.dart';
 
 void main() {
   runApp(const MyApp());
@@ -67,6 +67,7 @@ class _ConvoViewState extends State<ConvoView> {
 
   void firstTimeSetup() async {
     if (await UsageStorage.firstTimeOpeningApp()) {
+      QuestionStorage.loadInitialQuestions();
       setState(() {
         modalState = ModalState.welcome;
       });
@@ -165,6 +166,7 @@ class _ConvoViewState extends State<ConvoView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+        behavior: HitTestBehavior.deferToChild,
         onTapDown: (TapDownDetails details) {
           if (modalState != ModalState.inactive) return;
           setState(() {
@@ -193,8 +195,23 @@ class _ConvoViewState extends State<ConvoView> {
               Center(child: WelcomeModal(setModalState: setModalState)),
             if (modalState == ModalState.openAIKey)
               Center(child: OpenAIKeyModal(setModalState: setModalState)),
-            if (modalState == ModalState.pay)
-              Center(child: PayModal(setModalState: setModalState)),
+            Positioned(
+              top: 48,
+              right: 24,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.black54,
+                  size: 32,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MenuView()),
+                  );
+                },
+              ),
+            ),
           ],
         ));
   }

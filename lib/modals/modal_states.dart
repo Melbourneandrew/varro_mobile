@@ -1,1 +1,1 @@
-enum ModalState { welcome, openAIKey, pay, inactive }
+enum ModalState { welcome, openAIKey, inactive }

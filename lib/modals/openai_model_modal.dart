@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:scream_mobile/modals/modal_states.dart';
+import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/storage/token_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
 
-class OpenAIKeyModal extends StatelessWidget {
+class OpenAIModelModal extends StatelessWidget {
   final Function(ModalState ms) setModalState;
   final bool closable;
-  const OpenAIKeyModal({
+  const OpenAIModelModal({
     super.key,
     required this.setModalState,
     this.closable = false,
   });
 
-  void setPersonalKey(String apiKey) {
-    Logger.log("Setting personal OpenAI key: $apiKey");
-    TokenStorage.saveToken(apiKey);
+  void setModelName(String modelName) {
+    Logger.log("Setting model name: $modelName");
+    PlatformStorage.setModelName(modelName);
     closeModal();
   }
 
@@ -25,7 +26,7 @@ class OpenAIKeyModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController apiKeyController = TextEditingController();
+    TextEditingController modelNameController = TextEditingController();
 
     return Container(
       width: 300,
@@ -56,7 +57,7 @@ class OpenAIKeyModal extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               const Text(
-                'Enter OpenAI API key',
+                'Enter OpenAI Model Name',
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -66,9 +67,9 @@ class OpenAIKeyModal extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
-                  controller: apiKeyController,
+                  controller: modelNameController,
                   decoration: InputDecoration(
-                    hintText: 'Enter your API key',
+                    hintText: 'Model name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -78,9 +79,9 @@ class OpenAIKeyModal extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  String apiKey = apiKeyController.text;
-                  if (apiKey.isNotEmpty) {
-                    setPersonalKey(apiKey);
+                  String modelName = modelNameController.text;
+                  if (modelName.isNotEmpty) {
+                    setModelName(modelName);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -92,7 +93,7 @@ class OpenAIKeyModal extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'Set Key',
+                  'Set Model Name',
                   style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,

@@ -30,6 +30,10 @@ class Prompts {
     List<Message> chatHistory = await MessageStorage.getMessagesSinceLastProfileUpdate();
 
     String chatHistoryString = chatHistory.map((e) => "${e.role}: ${e.content}").join('\n');
+    // truncate chat history if it's too long
+    if (chatHistoryString.length > 5000) {
+      chatHistoryString = chatHistoryString.substring(0, 5000);
+    }
     String profileString = profile.toString();
     String alreadyGeneratedQuestions = "${recentlyAskedQuestions.join(', ')}, ${questionsInQueue.join(', ')}";
 

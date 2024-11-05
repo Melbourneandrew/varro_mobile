@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scream_mobile/rest/streaming_completion.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
-import 'agent/agent.dart';
+import 'package:scream_mobile/agent/agent.dart';
 import 'package:scream_mobile/storage/token_storage.dart';
 
 void main() {

@@ -101,12 +101,14 @@ class Agent {
       String buffer = '';
       int chunkCount = 0;
 
-      // Process the stream, combining every 2 chunks
+      // Process the stream, combining every 3 chunks
       await for (String chunk in stream) {
-        buffer += chunk;
-        chunkCount++;
+        if (chunk != '') {
+          buffer += chunk;
+          chunkCount++;
+        }
 
-        if (chunkCount == 2) {
+        if (chunkCount == 10) {
           latestResponse += buffer;
           await speak(
               stripFormatting(buffer)); // Process combined chunks for TTS
@@ -118,9 +120,11 @@ class Agent {
       // Handle any remaining chunk in the buffer
       if (buffer.isNotEmpty) {
         latestResponse += buffer;
+        await speak(
+            stripFormatting(buffer));
       }
 
-      Message responseMessage = Message(role: 'model', content: latestResponse);
+      Message responseMessage = Message(role: 'assistant', content: latestResponse);
       messageHistory.add(responseMessage);
       MessageStorage.saveMessage(responseMessage);
 
