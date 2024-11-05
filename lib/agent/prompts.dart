@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:scream_mobile/storage/profile_storage.dart';
 import 'package:scream_mobile/storage/question_storage.dart';
 

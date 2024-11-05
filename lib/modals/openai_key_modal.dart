@@ -36,7 +36,7 @@ class OpenAIKeyModal extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            offset: Offset(4, 4),
+            offset: const Offset(4, 4),
             blurRadius: 10,
             spreadRadius: 1,
           ),

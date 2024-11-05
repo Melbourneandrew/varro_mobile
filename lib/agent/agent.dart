@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -29,7 +28,7 @@ class Agent {
   }
 
   void initTts() async {
-    print("tts initialized");
+    Logger.log("tts initialized");
     flutterTts = FlutterTts();
     await flutterTts.awaitSpeakCompletion(true);
     await flutterTts.setLanguage("en-US");

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scream_mobile/modals/modal_states.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
-import 'package:scream_mobile/storage/token_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
 
 class OpenAIModelModal extends StatelessWidget {
@@ -37,7 +36,7 @@ class OpenAIModelModal extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            offset: Offset(4, 4),
+            offset: const Offset(4, 4),
             blurRadius: 10,
             spreadRadius: 1,
           ),

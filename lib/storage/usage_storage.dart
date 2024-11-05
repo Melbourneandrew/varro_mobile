@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../util/logger.dart';
 
 class UsageStorage {
   static const String _messageCountKey = 'message_count';
@@ -52,7 +53,7 @@ class UsageStorage {
     if (first) {
       await prefs.setBool('firstTimeOpeningApp', false);
     }
-    print("First time opening app: $first");
+    Logger.log("First time opening app: $first");
     return first;
   }
 

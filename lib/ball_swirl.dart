@@ -57,7 +57,7 @@ class BallSwirlState extends State<BallSwirl> {
     super.initState();
     waveformTime = 0.0;
     balls = initializeBalls();
-    timer = Timer.periodic(Duration(milliseconds: 16), (Timer t) => update());
+    timer = Timer.periodic(const Duration(milliseconds: 16), (Timer t) => update());
     transitioning = false;
   }
 
@@ -182,7 +182,7 @@ class BallSwirlState extends State<BallSwirl> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(double.infinity, double.infinity),
+      size: const Size(double.infinity, double.infinity),
       painter: BallPainter(balls: balls),
     );
   }

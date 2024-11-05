@@ -95,10 +95,6 @@ Future<ProfileUpdateResponse?> _attemptUpdateUserProfileAndGenerateQuestions(
     'Authorization': 'Bearer $token',
   };
 
-  Message systemPrompt = Message(
-    role: 'system',
-    content: Prompts.UpdateProfileSystemPrompt,
-  );
   Message userPrompt = Message(
     role: 'user',
     content: await Prompts.buildUpdateProfilePrompt(),

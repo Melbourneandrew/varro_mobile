@@ -1,3 +1,4 @@
+import 'package:scream_mobile/util/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -26,7 +27,7 @@ class Store {
   }
 
   static void spendConversaionCredits(int numCredits) async {
-    print("Spending $numCredits credits");
+    Logger.log("Spending $numCredits credits");
     final perfs = await SharedPreferences.getInstance();
     int currentCredits = perfs.getInt('conversationCredits') ?? 0;
     int newCredits = currentCredits - numCredits;
@@ -39,7 +40,7 @@ class Store {
     if (first) {
       await perfs.setBool('firstTimeOpeningApp', false);
     }
-    print("First time opening app: $first");
+    Logger.log("First time opening app: $first");
     return first;
   }
 
@@ -47,7 +48,7 @@ class Store {
     final perfs = await SharedPreferences.getInstance();
     int currentCredits = perfs.getInt('conversationCredits') ?? 0;
     int newCredits = currentCredits + numCredits;
-    print("Adding $numCredits credits. New total: $newCredits");
+    Logger.log("Adding $numCredits credits. New total: $newCredits");
     await perfs.setInt('conversationCredits', newCredits);
   }
 

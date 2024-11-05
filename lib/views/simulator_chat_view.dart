@@ -29,10 +29,10 @@ class SimulatorHUD extends StatefulWidget {
   const SimulatorHUD({Key? key}) : super(key: key);
 
   @override
-  _SimulatorHUDState createState() => _SimulatorHUDState();
+  SimulatorHUDState createState() => SimulatorHUDState();
 }
 
-class _SimulatorHUDState extends State<SimulatorHUD> {
+class SimulatorHUDState extends State<SimulatorHUD> {
   final TextEditingController _systemPromptController = TextEditingController(
     text: "You are a conversational agent having a casual chat with the user"
   );

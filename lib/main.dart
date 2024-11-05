@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:scream_mobile/ball-swirl.dart';
+import 'package:scream_mobile/ball_swirl.dart';
 import 'package:scream_mobile/agent/dictate.dart';
 import 'package:scream_mobile/storage/question_storage.dart';
 import 'package:scream_mobile/views/menu_view.dart';
@@ -11,7 +11,7 @@ import 'package:scream_mobile/util/silence_timer.dart';
 import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/storage/usage_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
-import 'FadingText.dart';
+import 'fading_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'agent/agent.dart';
 
@@ -35,10 +35,10 @@ class ConvoView extends StatefulWidget {
   const ConvoView({super.key});
 
   @override
-  _ConvoViewState createState() => _ConvoViewState();
+  ConvoViewState createState() => ConvoViewState();
 }
 
-class _ConvoViewState extends State<ConvoView> {
+class ConvoViewState extends State<ConvoView> {
   final GlobalKey<BallSwirlState> ballSwirlKey = GlobalKey();
   final GlobalKey<FadingTextButtonWidgetState> fadingTextState = GlobalKey();
   late Agent agent = Agent(model: "gpt-4o-mini");
@@ -75,7 +75,7 @@ class _ConvoViewState extends State<ConvoView> {
   }
 
   void screenPressed() {
-    print("Screen pressed");
+    Logger.log("Screen pressed");
     silenceTimer.stop();
     responseStopped = true;
     fadingTextState.currentState?.resetOpacity();
@@ -92,7 +92,7 @@ class _ConvoViewState extends State<ConvoView> {
   void screenReleased() async {
     //Pressing the screen while the assistant is responding should stop the response
     responseStopped = false;
-    print("Screen released");
+    Logger.log("Screen released");
     ballSwirlKey.currentState?.setBallsIdleFloating();
     //Wait for the dictation to complete
     await Future.delayed(const Duration(milliseconds: 250));
@@ -100,7 +100,7 @@ class _ConvoViewState extends State<ConvoView> {
 
     String q = dictationResult;
     if (q.isEmpty) {
-      print("Empty question");
+      Logger.log("Empty question");
       return;
     }
     if (responseStopped == true) return;
@@ -111,7 +111,7 @@ class _ConvoViewState extends State<ConvoView> {
     ballSwirlKey.currentState?.setBallsTightCircle();
     if (responseStopped == true) return;
     //Get chat completion for the question
-    String response = await agent.answerUser(q, speak);
+    await agent.answerUser(q, speak);
     if (responseStopped == true) return;
     //Trigger idle animation
     ballSwirlKey.currentState?.setBallsIdleFloating();
@@ -133,7 +133,7 @@ class _ConvoViewState extends State<ConvoView> {
 
   void speakToUserAfterSilence() async {
     agent.questionUser(speak);
-    print("Speaking to user after $silenceTimerDuration seconds of silence.");
+    Logger.log("Speaking to user after $silenceTimerDuration seconds of silence.");
     // String somethingToSay = await agent.thinkOfSomethingToSay();
     // speak(somethingToSay);
   }
@@ -141,7 +141,7 @@ class _ConvoViewState extends State<ConvoView> {
   /// This is the callback that the SpeechToText plugin calls when
   /// the platform returns recognized words.
   void handleDictationResult(SpeechRecognitionResult result) {
-    print("Speech result: ${result.recognizedWords}");
+    Logger.log("Speech result: ${result.recognizedWords}");
     setState(() {
       dictationResult = result.recognizedWords;
       if (pushTextDown) {

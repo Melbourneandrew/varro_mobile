@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class Dialogue {
   static const CannotConnectToServer =
       "I'm having trouble connecting to my remote resources right now.";

@@ -139,11 +139,6 @@ Future<Stream<String>> _attemptStreamingCompletion(
     return streamedResponse.stream
         .transform(utf8.decoder) // Decode bytes into UTF8 characters
         .transform(const LineSplitter()) // Split stream into lines
-    //print each trunk
-        .map((line) {
-          print(line);
-          return line;
-        })
         .map((line) => line.startsWith('data: ') ? line.substring(6) : line) // Remove the 'data: ' prefix
         .map((line) {
           try {

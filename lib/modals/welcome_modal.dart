@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import '../main.dart';
-import 'package:scream_mobile/modals/modal_states.dart';
+// ignore_for_file: constant_identifier_names
 
-import '../util/logger.dart';
+import 'package:flutter/material.dart';
+import 'package:scream_mobile/modals/modal_states.dart';
+import 'package:scream_mobile/util/logger.dart';
 
 class WelcomeModal extends StatelessWidget {
   static const String TITLE = "Meet Varro";
@@ -37,7 +37,7 @@ class WelcomeModal extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            offset: Offset(4, 4),
+            offset: const Offset(4, 4),
             blurRadius: 10,
             spreadRadius: 1,
           ),
