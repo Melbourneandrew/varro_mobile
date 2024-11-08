@@ -42,7 +42,7 @@ class SimulatorHUDState extends State<SimulatorHUD> {
   final TextEditingController _tokenController = TextEditingController();
 
   String _response = '';
-  Agent agent = Agent(model: "gpt-4o-mini");
+  Agent agent = Agent(model: "gpt-4o-mini", setErrorMessage: Logger.errorLog);
 
   void _handleSetToken() {
     final token = _tokenController.text;
@@ -71,7 +71,8 @@ class SimulatorHUDState extends State<SimulatorHUD> {
       final stream = await streamingCompletion(
         chatHistory,
         _systemPromptController.text,
-        Logger.speakLog
+        Logger.speakLog,
+        Logger.errorLog,
       );
 
       setState(() {

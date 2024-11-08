@@ -99,14 +99,7 @@ class CompletionRequestPayload {
 }
 
 Future<Stream<String>> streamingCompletion(List<Message> chatHistory,
-    String systemPrompt, Function(String) speak) async {
-  return _attemptStreamingCompletion(chatHistory, systemPrompt, speak,
-      isRetry: false);
-}
-
-Future<Stream<String>> _attemptStreamingCompletion(
-    List<Message> chatHistory, String systemPrompt, Function(String) speak,
-    {required bool isRetry}) async {
+    String systemPrompt, Function(String) speak, Function(String errorMessage) setErrorMessage) async {
   Logger.log(
       'Getting streaming completion at ${PlatformStorage.chatCompletionUrl}...');
   final url = Uri.parse(PlatformStorage.chatCompletionUrl);
@@ -149,8 +142,23 @@ Future<Stream<String>> _attemptStreamingCompletion(
         })
         .where((json) => json.isNotEmpty && json['choices'] != null && json['choices'].isNotEmpty) // Filter out empty JSON and objects without 'choices'
         .map((json) => json['choices'][0]['delta']['content'] ?? ""); // Get the first 'choice'
+  } else if (streamedResponse.statusCode == 401) {
+    speak(Dialogue.ApiKeyIssue);
+    setErrorMessage('API key issue');
+    final responseBody = await streamedResponse.stream.bytesToString();
+    throw Exception(
+        'Failed to get streaming completion: ${streamedResponse
+            .statusCode} - $responseBody');
+  } else if (streamedResponse.statusCode == 429) {
+    speak(Dialogue.RateLimitReached);
+    setErrorMessage('Rate limit reached');
+    final responseBody = await streamedResponse.stream.bytesToString();
+    throw Exception(
+        'Failed to get streaming completion: ${streamedResponse
+            .statusCode} - $responseBody');
   } else {
     speak(Dialogue.StreamingCompletionFailed);
+    setErrorMessage('Streaming completion failed');
     final responseBody = await streamedResponse.stream.bytesToString();
     throw Exception(
         'Failed to get streaming completion: ${streamedResponse.statusCode} - $responseBody');

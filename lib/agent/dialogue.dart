@@ -15,4 +15,6 @@ class Dialogue {
       "I'm having trouble updating your profile. You'll need to try again.";
   static const NoQuestionsAvailableToAsk =
       "I'm sorry, I don't have any questions to ask.";
+  static const ApiKeyIssue = "There seems to be an issue with your API key";
+  static const RateLimitReached = "We've reached the OpenAI API rate limit";
 }

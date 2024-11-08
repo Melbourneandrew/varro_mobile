@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlatformStorage {
-  static const String _productionApiUrl = 'https://api.example.com';
+  static const String _productionApiUrl = 'https://api.openai.com/v1/chat/completions';
   static const String _developmentApiUrl = 'https://api.openai.com/v1/chat/completions';
   
   static late final bool isSimulator;
@@ -27,10 +28,15 @@ class PlatformStorage {
     isSimulator = await _isRunningInSimulator();
     apiUrl = isSimulator ? _developmentApiUrl : _productionApiUrl;
     chatCompletionUrl = apiUrl;
-    modelName = 'gpt-4o-mini';
+    modelName = await getModelName();
   }
 
   static void setModelName(String name) {
     modelName = name;
+  }
+
+  static Future<String> getModelName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('modelName') ?? 'gpt-4o-mini';
   }
 }

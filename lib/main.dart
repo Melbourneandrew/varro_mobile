@@ -41,7 +41,7 @@ class ConvoView extends StatefulWidget {
 class ConvoViewState extends State<ConvoView> {
   final GlobalKey<BallSwirlState> ballSwirlKey = GlobalKey();
   final GlobalKey<FadingTextButtonWidgetState> fadingTextState = GlobalKey();
-  late Agent agent = Agent(model: "gpt-4o-mini");
+  late Agent agent = Agent(model: PlatformStorage.modelName, setErrorMessage: setErrorMessage);
   String dictationResult = '';
   final Dictate dictate = Dictate();
   ModalState modalState = ModalState.inactive;
@@ -50,6 +50,7 @@ class ConvoViewState extends State<ConvoView> {
   bool pushTextDown = false;
   late final SilenceTimer silenceTimer;
   final int silenceTimerDuration = 10; // seconds
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -132,10 +133,9 @@ class ConvoViewState extends State<ConvoView> {
   }
 
   void speakToUserAfterSilence() async {
+    if (modalState != ModalState.inactive) return;
     agent.questionUser(speak);
     Logger.log("Speaking to user after $silenceTimerDuration seconds of silence.");
-    // String somethingToSay = await agent.thinkOfSomethingToSay();
-    // speak(somethingToSay);
   }
 
   /// This is the callback that the SpeechToText plugin calls when
@@ -163,12 +163,20 @@ class ConvoViewState extends State<ConvoView> {
     });
   }
 
+  void setErrorMessage(String errorMessage) {
+    Logger.log("Setting error message: $errorMessage");
+    setState(() {
+      this.errorMessage = errorMessage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         behavior: HitTestBehavior.deferToChild,
         onTapDown: (TapDownDetails details) {
           if (modalState != ModalState.inactive) return;
+          Logger.log(modalState.toString());
           setState(() {
             textTopOffset = 0.0;
           });
@@ -180,6 +188,7 @@ class ConvoViewState extends State<ConvoView> {
         },
         child: Stack(
           children: [
+            // Fading Text
             Positioned(
               top: MediaQuery.of(context).size.height * 0.3 -
                   textTopOffset, // Adjust this value as needed
@@ -190,11 +199,29 @@ class ConvoViewState extends State<ConvoView> {
                 child: FadingText(dictationResult, key: fadingTextState),
               ),
             ),
+            // Ball Swirl animation
             BallSwirl(key: ballSwirlKey),
+            // Error message text
+            if (errorMessage != '')
+              Positioned(
+                bottom: 60,
+                left: 24,
+                right: 24,
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            // Modals
             if (modalState == ModalState.welcome)
               Center(child: WelcomeModal(setModalState: setModalState)),
             if (modalState == ModalState.openAIKey)
               Center(child: OpenAIKeyModal(setModalState: setModalState)),
+            // Menu button
             Positioned(
               top: 48,
               right: 24,

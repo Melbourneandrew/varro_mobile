@@ -1,4 +1,5 @@
 import 'package:scream_mobile/simulator_utils.dart';
+import 'package:scream_mobile/storage/platform_storage.dart';
 import 'package:scream_mobile/util/logger.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -20,7 +21,7 @@ class Dictate {
   /// Each time to start a speech recognition session
   void listen(void Function(SpeechRecognitionResult) callback) async {
     // Dictation will not work in simulator, so we generate a random sentence
-    if (isRunningInSimulator()) {
+    if (PlatformStorage.isSimulator) {
       Logger.log("Dictating (simulator)...");
       String dicText = "";
       for (int i = 0; i < 5; i++) {

@@ -10,11 +10,11 @@ import 'package:scream_mobile/storage/message_storage.dart';
 import 'package:scream_mobile/storage/profile_storage.dart';
 import 'package:scream_mobile/storage/question_storage.dart';
 import 'package:scream_mobile/util/strip_formatting.dart';
-
-import '../util/logger.dart';
+import 'package:scream_mobile/util/logger.dart';
 
 class Agent {
   String model;
+  Function(String errorMessage) setErrorMessage;
   double volume = 1.0;
   double pitch = 1.0;
   double rate = 0.5;
@@ -23,7 +23,7 @@ class Agent {
 
   late FlutterTts flutterTts;
 
-  Agent({required this.model}) {
+  Agent({required this.model, required void Function(String errorMessage) this.setErrorMessage}) {
     initTts();
   }
 
@@ -42,25 +42,18 @@ class Agent {
         IosTextToSpeechAudioCategoryOptions.mixWithOthers
       ],
     );
-    flutterTts.setStartHandler(() {
-      // print("Playing");
-    });
+    List<dynamic> voices = await flutterTts.getVoices;
+    List<dynamic> englishVoices = voices
+        .where((voice) => voice["locale"].toString().contains("en"))
+        .toList();
+    // filter only English voices
 
-    flutterTts.setCompletionHandler(() {
-      // print("Complete");
-    });
+    for (var voice in englishVoices) {
+      Logger.log("Voice: $voice");
+    }
+    await flutterTts.setVoice({"name": "Samantha", "locale": "en-US"});
 
-    flutterTts.setCancelHandler(() {
-      // print("Cancel");
-    });
-
-    flutterTts.setPauseHandler(() {
-      // print("Paused");
-    });
-
-    flutterTts.setContinueHandler(() {
-      // print("Continued");
-    });
+    // Logger.log("Available voices: ${await flutterTts.getVoices}");
 
     flutterTts.setErrorHandler((msg) {
       Logger.log("tts error: $msg");
@@ -84,6 +77,7 @@ class Agent {
   }
 
   Future<String> answerUser(String text, Function(String) speak) async {
+    setErrorMessage('');
     QuestionStorage.removeQuestion(lastQuestionAsked);
     Message message = Message(role: 'user', content: text);
     messageHistory.add(message);
@@ -95,6 +89,7 @@ class Agent {
         messageHistory,
         Prompts.DefaultSystemPrompt,
         speak,
+          setErrorMessage
       );
 
       String buffer = '';
