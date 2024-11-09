@@ -12,6 +12,15 @@ class MessageStorage {
     }
   }
 
+  static Future<List<Message>> getMessageHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final messagesJson = prefs.getStringList('messages');
+    if (messagesJson != null) {
+      return messagesJson.map((e) => Message.fromJsonStringWithDate(e)).toList();
+    }
+    return [];
+  }
+
   static Future<void> saveMessage(Message message) async {
     messages.add(message);
 

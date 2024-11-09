@@ -62,7 +62,7 @@ class Message {
   }
 
   static Message fromJsonStringWithDate(String jsonString) {
-    Map<String, String> json = jsonDecode(jsonString);
+    Map<String, dynamic> json = jsonDecode(jsonString);
     return Message.fromJsonWithDate(json);
   }
 }
@@ -75,6 +75,9 @@ class CompletionRequestPayload {
     required this.systemPrompt,
     required this.chatHistory,
   });
+
+  get role => null;
+  get content => null;
 
   // https://platform.openai.com/docs/api-reference/chat
   Map<String, dynamic> toJson() {
@@ -95,6 +98,11 @@ class CompletionRequestPayload {
 
   String toJsonString() {
     return jsonEncode(toJson());
+  }
+
+  @override
+  String toString() {
+    return role + ": " + content;
   }
 }
 

@@ -3,6 +3,8 @@ import 'package:scream_mobile/modals/openai_model_modal.dart';
 import 'package:scream_mobile/views/profile_view.dart';
 import 'package:scream_mobile/modals/openai_key_modal.dart';
 
+import 'message_history_view.dart';
+
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
 
@@ -74,6 +76,17 @@ class MenuView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfileView()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            context,
+            icon: Icons.question_answer_sharp,
+            title: 'Chat History',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MessageHistoryView()),
               );
             },
           ),
