@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PlatformStorage {
   static const String _productionApiUrl = 'https://api.openai.com/v1/chat/completions';
   static const String _developmentApiUrl = 'https://api.openai.com/v1/chat/completions';
-  
+  static const String modelListUrl = 'https://api.openai.com/v1/models';
+
   static late final bool isSimulator;
   static late final String apiUrl;
   static late final String chatCompletionUrl;
